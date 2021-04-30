@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { mapStateToProps } from "../helpers/mapStateToProps";
 import { fetchUrlPokemon } from "../store/actions";
@@ -11,7 +11,7 @@ const PokeGrid = ({
   // prevUrlPokemon,
   // nextUrlPokemon,
 }) => {
-  const [isPreloaded, setIsPreloaded] = useState(false);
+  // const [isPreloaded, setIsPreloaded] = useState(false);
 
   return (
     <section className="container">
