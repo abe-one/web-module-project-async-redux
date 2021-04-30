@@ -10,6 +10,8 @@ import { setKeyDown } from "./store";
 
 function App({
   urlPokemon,
+  prevUrlPokemon,
+  nextUrlPokemon,
   isLoading,
   error,
   fetchUrlPokemon,
@@ -23,19 +25,27 @@ function App({
   //\/\/\/\/\/\/\/\/\/\ EFFECTS /\/\/\/\/\/\/\/\/\/\\
 
   useEffect(
-    () =>
-      fetchUrlPokemon(`https://pokeapi.co/api/v2/pokemon?offset=900&limit=3`),
+    () => fetchUrlPokemon(`https://pokeapi.co/api/v2/pokemon?offset=0&limit=3`),
     [fetchUrlPokemon]
   );
 
-  useEffect(
-    () =>
-      //\/\/\/\/\/\/\/\/\/\ Bring conditional logic before fetch from reducer /\/\/\/\/\/\/\/\/\/\\
-      urlPokemon.forEach((pkmn) => {
-        fetchPkmn(pkmn.url);
-      }),
-    [urlPokemon, fetchPkmn]
-  );
+  useEffect(() => {
+    urlPokemon.forEach((pkmn) => {
+      fetchPkmn(pkmn.url);
+    });
+  }, [urlPokemon, fetchPkmn]);
+
+  useEffect(() => {
+    prevUrlPokemon.results.forEach((pkmn) => {
+      fetchPkmn(pkmn.url);
+    });
+  }, [prevUrlPokemon, fetchPkmn]);
+
+  useEffect(() => {
+    nextUrlPokemon.results.forEach((pkmn) => {
+      fetchPkmn(pkmn.url);
+    });
+  }, [nextUrlPokemon, fetchPkmn]);
 
   useEffect(() => appRef.current.focus(), []);
 
@@ -57,9 +67,7 @@ function App({
       <h2>Yet Another Poke App</h2>
       <button
         onClick={() =>
-          fetchUrlPokemon(
-            `https://pokeapi.co/api/v2/pokemon?offset=750&limit=3`
-          )
+          fetchUrlPokemon(`https://pokeapi.co/api/v2/pokemon?offset=50&limit=3`)
         }
       >
         Test
@@ -83,7 +91,9 @@ const mapState = mapStateToProps(
   "isLoading",
   "error",
   "urlPokemon",
-  "pokemonList"
+  "pokemonList",
+  "prevUrlPokemon",
+  "nextUrlPokemon"
 );
 
 export default connect(mapState, { fetchUrlPokemon, fetchPkmn, setKeyDown })(

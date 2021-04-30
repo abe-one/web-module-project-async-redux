@@ -57,7 +57,12 @@ const Pagination = ({
   );
 };
 
-const mapState = mapStateToProps("pagination", "userKeyDown");
+const mapState = mapStateToProps(
+  "pagination",
+  "userKeyDown",
+  "prevUrlPokemon",
+  "nextUrlPokemon"
+);
 
 export default connect(mapState, {
   fetchUrlPokemon,

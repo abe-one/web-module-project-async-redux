@@ -4,5 +4,4 @@ export {
   fetchUrlPokemon,
   fetchPkmn,
   fetchPrevNextUrlPokemon,
-  fetchPrevNextPkmn,
 } from "./actions";

@@ -4,6 +4,7 @@ import {
   fSUCCESS,
   fFAILURE,
   fCOMPLETE,
+  ANY,
   URL_POKEMON,
   PKMN,
   PREV_URL_POKEMON,
@@ -13,9 +14,10 @@ import {
 const initialState = {
   isLoading: false,
   error: "",
+  pendingCalls: [],
   urlPokemon: [],
-  prevUrlPokemon: [],
-  nextUrlPokemon: [],
+  prevUrlPokemon: { call: "", results: [] },
+  nextUrlPokemon: { call: "", results: [] },
   pokemonList: [],
   pagination: {
     totPokemonCount: 0,
@@ -59,13 +61,22 @@ export const reducer = (state = initialState, action) => {
         userKeyDown: payload,
       };
 
+    case fSTART(ANY):
+      return {
+        ...state,
+        pendingCalls: [...state.pendingCalls, payload],
+      };
+    case fCOMPLETE(ANY):
+      return {
+        ...state,
+        pendingCalls: state.pendingCalls.filter((url) => url !== payload),
+      };
+
     case fSTART(URL_POKEMON):
       return {
         ...state,
         isLoading: true,
-        userKeyDown: null,
       };
-
     case fSUCCESS(URL_POKEMON):
       const { results, count, next, previous } = payload;
       return {
@@ -79,13 +90,11 @@ export const reducer = (state = initialState, action) => {
           currentCall: parseCall(count, results.length, previous, next),
         },
       };
-
     case fFAILURE(URL_POKEMON):
       return {
         ...state,
         error: payload,
       };
-
     case fCOMPLETE(URL_POKEMON):
       return {
         ...state,
@@ -97,7 +106,6 @@ export const reducer = (state = initialState, action) => {
     //     ...state,
     //     isLoading: true,
     //   };
-
     case fSUCCESS(PKMN):
       return {
         ...state,
@@ -105,29 +113,47 @@ export const reducer = (state = initialState, action) => {
           (a, b) => a.id - b.id
         ),
       };
-
     // case fFAILURE(PKMN):
     //   return {
     //     ...state,
     //     error: payload,
     //   };
-
     // case fCOMPLETE(PKMN):
     //   return {
     //     ...state,
     //     isLoading: false,
     //   };
 
-    case fSUCCESS(NEXT_URL_POKEMON):
+    case fSTART(PREV_URL_POKEMON):
       return {
         ...state,
-        nextUrlPokemon: payload,
+        prevUrlPokemon: { ...state.prevUrlPokemon, url: payload },
       };
-
     case fSUCCESS(PREV_URL_POKEMON):
       return {
         ...state,
-        prevUrlPokemon: payload,
+        prevUrlPokemon: { ...state.prevUrlPokemon, ...payload },
+      };
+    case fFAILURE(PREV_URL_POKEMON):
+      return {
+        ...state,
+        prevUrlPokemon: { call: "", results: [] },
+      };
+
+    case fSTART(NEXT_URL_POKEMON):
+      return {
+        ...state,
+        nextUrlPokemon: { ...state.nextUrlPokemon, url: payload },
+      };
+    case fSUCCESS(NEXT_URL_POKEMON):
+      return {
+        ...state,
+        nextUrlPokemon: { ...state.nextUrlPokemon, ...payload },
+      };
+    case fFAILURE(NEXT_URL_POKEMON):
+      return {
+        ...state,
+        nextUrlPokemon: { call: "", results: [] },
       };
 
     default:

@@ -6,7 +6,8 @@ import LoadingSpinner from "./LoadingSpinner";
 const PokeCard = ({ pkmn }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const sprite = pkmn.sprites.other["official-artwork"].front_default;
+  let sprite = pkmn.sprites.other["official-artwork"].front_default;
+  sprite = sprite ? sprite : pkmn.sprites.front_default;
 
   return (
     <div className="poke-card">
